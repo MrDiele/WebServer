@@ -1,0 +1,5 @@
+﻿{
+  "ConnectionStrings": {
+    "DataAccesPostgreSqlProvider": "User ID=postgres;Password=gt5000;Host=localhost;Port=5432;Database=base_people;Pooling=true;"
+  }
+}
