@@ -33,14 +33,14 @@ namespace WebServer.DataAccessPostgreSqlProvider
                 {
                     connection.ConnectionString = connectionString;
                     connection.Open();
-                    string inquiryForIdCity = "(SELECT town FROM \"Cities\" WHERE idcity = '" + person.city + "';)";
+                    string inquiryForIdCity = "(SELECT idcity FROM \"Cities\" WHERE town = '" + person.city + "')";
                     NpgsqlCommand adapter = new NpgsqlCommand("INSERT INTO \"Persons\"" + @"( name
                                                                                             , dateofbirth
 			                                                                                , idcity
                                                                                             )
                                                                VALUES ( '" + person.name + @"'
 	                                                                  , '" + person.dateofbirth + @"'
-	                                                                  , '" + inquiryForIdCity + @"');", connection);
+	                                                                  , " + inquiryForIdCity + @");", connection);
                     adapter.ExecuteReader();
                 }
                 catch (Exception ex)
@@ -67,11 +67,11 @@ namespace WebServer.DataAccessPostgreSqlProvider
                 {
                     connection.ConnectionString = connectionString;
                     connection.Open();
-                    string inquiryForIdCity = "(SELECT idcity FROM \"Cities\" WHERE town = '" + person.city + "';)";
+                    string inquiryForIdCity = "(SELECT idcity FROM \"Cities\" WHERE town = '" + person.city + "')";
                     NpgsqlCommand adapter = new NpgsqlCommand("UPDATE \"Persons\" SET name = '" + person.name + @"'
 			                                                                        , dateofbirth = '" + person.dateofbirth + "'" +  @"
                                                                                     , idcity  = '" + inquiryForIdCity + @"' 
-                                                                WHERE idperson = '" + person.idperson + @"';", connection);
+                                                                WHERE idperson = " + person.idperson + @";", connection);
                     adapter.ExecuteReader();
                 }
                 catch (Exception ex)
