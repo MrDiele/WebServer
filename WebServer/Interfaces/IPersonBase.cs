@@ -8,6 +8,7 @@ namespace WebServer.Interfaces
 {
     public interface IPersonBase
     {
+        List<Person> GetFilterPersonsList(Person person);
         List<City> GetCitiesList();
         List<Person> GetPersonsList();
         Person GetPerson(int id);

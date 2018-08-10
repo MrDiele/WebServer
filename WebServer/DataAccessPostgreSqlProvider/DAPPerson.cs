@@ -114,6 +114,98 @@ namespace WebServer.DataAccessPostgreSqlProvider
         }
 
         /// <summary>
+        /// Получает список пользователей в соответвии с параметрами фильтра.
+        /// </summary>
+        /// <param name="person"> Обьект Person. </param>
+        /// <returns> Возвращает список пользователей. </returns>
+        public List<Person> GetFilterPersonsList(Person person)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection())
+            {
+                try                                                                                               // пользователь может ввести или не ввести некоторые фильтры участь в запросе 
+                {
+                    connection.ConnectionString = connectionString;
+                    connection.Open();
+                    string filter = null;
+                    string filterName = (person.name == null) ? null : "(ps.name LIKE '%" + person.name + "%')";
+                    string filterDate = (person.dateofbirth.ToString() != "01.01.0001 0:00:00") ? null : " (ps.dateofbirth > '" + person.dateofbirth + "')";
+                    string filterCity = (person.city == null) ? null : "(cs.town LIKE '%" + person.city + "%')";
+
+                    if (filterName != null)
+                    {
+                        if (filterDate != null)
+                        {
+                            if (filterCity != null)
+                            {
+                                filter = filterName + " AND " + filterDate + " AND " + filterCity;
+                            }
+                            else
+                            {
+                                filter = filterName + " AND " + filterDate;
+                            }
+                        }
+                        else
+                        {
+                            if (filterCity != null)
+                            {
+                                filter = filterName + " AND " + filterCity;
+                            }
+                            else
+                            {
+                                filter = filterName;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (filterDate != null)
+                        {
+                            if (filterCity != null)
+                            {
+                                filter = filterDate + " AND " + filterCity;
+                            }
+                        }
+                        else
+                        {
+                            filter = filterCity; 
+                        }
+                    }
+                    string qwerty = "SELECT ps.idperson, ps.name, ps.dateofbirth, cs.town "
+                                  + "FROM \"Persons\" AS ps "
+                                  + "INNER JOIN \"Cities\" AS cs ON ps.idcity = cs.idcity "
+                                  + "WHERE "
+                                  +"(ps.name LIKE '%" + person.name + "%') "
+                                  + "AND (ps.dateofbirth > '" + person.dateofbirth + "') "
+                                  + "AND (cs.town LIKE '%" + person.city + "%')";
+                    NpgsqlCommand adapter = new NpgsqlCommand(qwerty, connection);
+                    NpgsqlDataReader dr = adapter.ExecuteReader();
+                    _PersonsList = new List<Person>();
+                    while (dr.Read())
+                    {
+                        Person filterPerson = new Person
+                        {
+                            idperson = Convert.ToInt32(dr[0]),
+                            name = dr[1].ToString(),
+                            dateofbirth = Convert.ToDateTime(dr[2]),
+                            city = dr[3].ToString()
+                        };
+                        _PersonsList.Add(filterPerson);
+                    }   
+                    return _PersonsList;
+                }
+                catch (Exception ex)
+                {
+                    Logs.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.ToString());
+                    return null;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        /// <summary>
         /// Получает список пользователей.
         /// </summary>
         /// <returns> Возвращает список пользователей. </returns>

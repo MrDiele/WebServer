@@ -23,6 +23,13 @@ namespace WebServer.Controllers
             return _PersonBase.GetCitiesList();
         }
 
+        [HttpPost]
+        [Route("Filter")]
+        public IEnumerable<Person> GetFilterPersons([FromBody] Person person)
+        {
+            return _PersonBase.GetFilterPersonsList(person);
+        }
+
         [HttpGet]
         public IEnumerable<Person> GetPersons()
         {
