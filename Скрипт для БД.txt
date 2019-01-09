@@ -1,0 +1,46 @@
+CREATE TABLE "Cities"(
+idcity INTEGER PRIMARY KEY,
+town TEXT NOT NULL 
+);
+
+CREATE TABLE "Persons"( 
+idperson serial,
+name TEXT NOT NULL,
+dateofbirth date NOT NULL, 
+idcity INTEGER NOT NULL,
+FOREIGN KEY (idcity) REFERENCES "Cities"(idcity) 
+);
+
+INSERT INTO "Cities"(idcity, town)
+VALUES (1, 'Москва');
+INSERT INTO "Cities"(idcity, town)
+VALUES (2, 'Ульяновск');
+INSERT INTO "Cities"(idcity, town)
+VALUES (3, 'Димитровград');
+
+INSERT INTO "Persons" ( name
+			, dateofbirth
+			, idcity
+)
+VALUES ('Петров Пётр Петрович'
+	, '02.05.1989'
+	, 2
+);
+
+INSERT INTO "Persons" ( name
+			, dateofbirth
+			, idcity
+)
+VALUES ('Сидоров Сидр Сидорович'
+	, '07.03.1990'
+	, 1
+);
+
+INSERT INTO "Persons" ( name
+			, dateofbirth
+			, idcity
+)
+VALUES ('Иванов Иван Иванович'
+	, '20.11.1995'
+	, 1
+);
